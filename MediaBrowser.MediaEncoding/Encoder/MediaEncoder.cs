@@ -489,8 +489,8 @@ namespace MediaBrowser.MediaEncoding.Encoder
             CancellationToken cancellationToken)
         {
             var args = extractChapters
-                ? "{0} -i {1} -threads {2} -v warning -print_format json -show_streams -show_chapters -show_format"
-                : "{0} -i {1} -threads {2} -v warning -print_format json -show_streams -show_format";
+                ? "{0} -i {1} -threads {2} -v warning -print_format json -show_streams -show_chapters -show_format  -protocol_whitelist \"file,https,tls,crypto,http,tcp\""
+                : "{0} -i {1} -threads {2} -v warning -print_format json -show_streams -show_format  -protocol_whitelist \"file,https,tls,crypto,http,tcp\"";
             args = string.Format(CultureInfo.InvariantCulture, args, probeSizeArgument, inputPath, _threads).Trim();
 
             var process = new Process
