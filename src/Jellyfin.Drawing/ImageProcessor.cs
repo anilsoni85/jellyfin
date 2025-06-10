@@ -176,17 +176,9 @@ public sealed class ImageProcessor : IImageProcessor, IDisposable
         ImageFormat outputFormat = GetOutputFormat(options.SupportedOutputFormats, requiresTransparency);
         string cacheFilePath = GetCacheFilePath(
             originalImagePath,
-            options.Width,
-            options.Height,
-            options.MaxWidth,
-            options.MaxHeight,
-            options.FillWidth,
-            options.FillHeight,
             quality,
             dateModified,
             outputFormat,
-            options.PercentPlayed,
-            options.UnplayedCount,
             options.Blur,
             options.BackgroundColor,
             options.ForegroundLayer);
@@ -252,17 +244,9 @@ public sealed class ImageProcessor : IImageProcessor, IDisposable
     /// </summary>
     private string GetCacheFilePath(
         string originalPath,
-        int? width,
-        int? height,
-        int? maxWidth,
-        int? maxHeight,
-        int? fillWidth,
-        int? fillHeight,
         int quality,
         DateTime dateModified,
         ImageFormat format,
-        double percentPlayed,
-        int? unwatchedCount,
         int? blur,
         string backgroundColor,
         string foregroundLayer)
@@ -278,54 +262,6 @@ public sealed class ImageProcessor : IImageProcessor, IDisposable
 
         filename.Append(",f=");
         filename.Append(format);
-
-        if (width.HasValue)
-        {
-            filename.Append(",width=");
-            filename.Append(width.Value);
-        }
-
-        if (height.HasValue)
-        {
-            filename.Append(",height=");
-            filename.Append(height.Value);
-        }
-
-        if (maxWidth.HasValue)
-        {
-            filename.Append(",maxwidth=");
-            filename.Append(maxWidth.Value);
-        }
-
-        if (maxHeight.HasValue)
-        {
-            filename.Append(",maxheight=");
-            filename.Append(maxHeight.Value);
-        }
-
-        if (fillWidth.HasValue)
-        {
-            filename.Append(",fillwidth=");
-            filename.Append(fillWidth.Value);
-        }
-
-        if (fillHeight.HasValue)
-        {
-            filename.Append(",fillheight=");
-            filename.Append(fillHeight.Value);
-        }
-
-        if (percentPlayed > 0)
-        {
-            filename.Append(",p=");
-            filename.Append(percentPlayed);
-        }
-
-        if (unwatchedCount.HasValue)
-        {
-            filename.Append(",p=");
-            filename.Append(unwatchedCount.Value);
-        }
 
         if (blur.HasValue)
         {
