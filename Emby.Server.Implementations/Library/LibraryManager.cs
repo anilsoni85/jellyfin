@@ -1186,7 +1186,11 @@ namespace Emby.Server.Implementations.Library
                 CollectionType = GetCollectionType(dir)
             };
 
-            var libraryFolder = allCollectionFolders.FirstOrDefault(i => string.Equals(i.Path, dir, StringComparison.OrdinalIgnoreCase));
+            var libraryFolder = allCollectionFolders.FirstOrDefault(i =>
+            {
+                _logger.LogDebug("Checking if {Path} equals {Dir}", i.Path, dir);
+                return string.Equals(i.Path, dir, StringComparison.OrdinalIgnoreCase);
+            });
             if (libraryFolder is not null)
             {
                 var libraryFolderId = libraryFolder.Id.ToString("N", CultureInfo.InvariantCulture);

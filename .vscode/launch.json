@@ -25,7 +25,7 @@
             "program": "${workspaceFolder}/Jellyfin.Server/bin/Debug/net8.0/jellyfin.dll",
             "args": ["--nowebclient"],
             "cwd": "${workspaceFolder}/Jellyfin.Server",
-            "console": "internalConsole",
+            "console": "integratedTerminal",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart"
         },
