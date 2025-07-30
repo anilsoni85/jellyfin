@@ -50,7 +50,7 @@ public class ResponseTimeMiddleware
             var responseTimeMs = responseTime.TotalMilliseconds;
             if (enableWarning && responseTimeMs > warningThreshold && _logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.LogDebug(
+                _logger.LogWarning(
                     "Slow HTTP Response from {Url} to {RemoteIP} in {Elapsed:g} with Status Code {StatusCode}",
                     context.Request.GetDisplayUrl(),
                     context.GetNormalizedRemoteIP(),
