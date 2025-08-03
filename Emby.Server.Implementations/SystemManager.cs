@@ -67,7 +67,8 @@ public class SystemManager : ISystemManager
             LocalAddress = _applicationHost.GetSmartApiUrl(request),
             SupportsLibraryMonitor = true,
             PackageName = _startupOptions.PackageName,
-            CastReceiverApplications = _configurationManager.Configuration.CastReceiverApplications
+            CastReceiverApplications = _configurationManager.Configuration.CastReceiverApplications,
+            GCMemoryInfo = GCMemoryInfoData.CreateFrom(System.GC.GetGCMemoryInfo())
         };
     }
 

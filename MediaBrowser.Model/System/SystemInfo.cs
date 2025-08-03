@@ -134,5 +134,50 @@ namespace MediaBrowser.Model.System
         [Obsolete("This is no longer set")]
         [DefaultValue("X64")]
         public string SystemArchitecture { get; set; } = "X64";
+
+        public GCMemoryInfoData GCMemoryInfo { get; set; }
+    }
+
+    public class GCMemoryInfoData
+    {
+        public long TotalAvailableMemoryBytes { get; set; }
+        public long HighMemoryLoadThresholdBytes { get; set; }
+        public long MemoryLoadBytes { get; set; }
+        public long HeapSizeBytes { get; set; }
+        public long FragmentedBytes { get; set; }
+        public long TotalCommittedBytes { get; set; }
+        public long PromotedBytes { get; set; }
+        public long PinnedObjectsCount { get; set; }
+        public long FinalizationPendingCount { get; set; }
+        public long Index { get; set; }
+        public int Generation { get; set; }
+        public bool Compacted { get; set; }
+        public bool Concurrent { get; set; }
+        public IReadOnlyList<TimeSpan> PauseDurations { get; set; }
+        public double PauseTimePercentage { get; set; }
+        public IReadOnlyList<GCGenerationInfo> GenerationInfo { get; set; }
+
+        public static GCMemoryInfoData CreateFrom(GCMemoryInfo info)
+        {
+            return new GCMemoryInfoData
+            {
+                HighMemoryLoadThresholdBytes = info.HighMemoryLoadThresholdBytes,
+                MemoryLoadBytes = info.MemoryLoadBytes,
+                TotalAvailableMemoryBytes = info.TotalAvailableMemoryBytes,
+                HeapSizeBytes = info.HeapSizeBytes,
+                FragmentedBytes = info.FragmentedBytes,
+                Index = info.Index,
+                Generation = info.Generation,
+                Compacted = info.Compacted,
+                Concurrent = info.Concurrent,
+                TotalCommittedBytes = info.TotalCommittedBytes,
+                PromotedBytes = info.PromotedBytes,
+                PinnedObjectsCount = info.PinnedObjectsCount,
+                FinalizationPendingCount = info.FinalizationPendingCount,
+                PauseDurations = info.PauseDurations.ToArray(),
+                PauseTimePercentage = info.PauseTimePercentage,
+                GenerationInfo = info.GenerationInfo.ToArray()
+            };
+        }
     }
 }
