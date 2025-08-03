@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ATL.Logging;
 using Emby.Naming.Common;
 using Emby.Naming.TV;
 using Emby.Server.Implementations.Library.Resolvers;
@@ -46,6 +47,7 @@ using MediaBrowser.Model.Library;
 using MediaBrowser.Model.Querying;
 using MediaBrowser.Model.Tasks;
 using Microsoft.Extensions.Logging;
+using Nikse.SubtitleEdit.Core.Common;
 using Episode = MediaBrowser.Controller.Entities.TV.Episode;
 using EpisodeInfo = Emby.Naming.TV.EpisodeInfo;
 using Genre = MediaBrowser.Controller.Entities.Genre;
@@ -382,7 +384,48 @@ namespace Emby.Server.Implementations.Library
                 }
             }
 
-            if (options.DeleteFileLocation && item.IsFileProtocol)
+            // move deleted item file to trash library if exists
+            string trashLibDirPath = GetVirtualFolders(false).FirstOrDefault(i => i.Name == "trash")?.Locations.FirstOrDefault() ?? "";
+            var moveToTrashLibrary = !string.IsNullOrEmpty(trashLibDirPath) && Directory.Exists(trashLibDirPath);
+            _logger.LogInformation("Trash library path: {TrashLibDirPath} moveToTrashLibrary: {MoveToTrashLibrary}", trashLibDirPath, moveToTrashLibrary);
+            if (moveToTrashLibrary && item.IsFileProtocol)
+            {
+                foreach (var fileSystemInfo in item.GetDeletePaths())
+                {
+                    if (Directory.Exists(fileSystemInfo.FullName) || File.Exists(fileSystemInfo.FullName))
+                    {
+                        try
+                        {
+                            _logger.LogInformation(
+                                "Moving item to trash library, Type: {Type}, Name: {Name}, Path: {Path}, Id: {Id}",
+                                item.GetType().Name,
+                                item.Name ?? "Unknown name",
+                                fileSystemInfo.FullName,
+                                item.Id);
+
+                            if (fileSystemInfo.IsDirectory)
+                            {
+                                Directory.Move(fileSystemInfo.FullName, trashLibDirPath);
+                            }
+                            else
+                            {
+                                var trashFilePath = Path.Combine(trashLibDirPath, Path.GetFileName(fileSystemInfo.FullName));
+                                File.Move(fileSystemInfo.FullName, trashFilePath);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex,
+                                "Error occured while Moving item to trash library, only removing from database, Type: {Type}, Name: {Name}, Path: {Path}, Id: {Id}",
+                                item.GetType().Name,
+                                item.Name ?? "Unknown name",
+                                fileSystemInfo.FullName,
+                                item.Id);
+                        }
+                    }
+                }
+            }
+            else if (options.DeleteFileLocation && item.IsFileProtocol)
             {
                 // Assume only the first is required
                 // Add this flag to GetDeletePaths if required in the future
